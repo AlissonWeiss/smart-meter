@@ -1,0 +1,7 @@
+{
+  "name": "SmartMeter-Monitor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

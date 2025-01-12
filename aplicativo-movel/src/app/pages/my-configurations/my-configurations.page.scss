@@ -1,0 +1,43 @@
+ion-header,
+ion-toolbar,
+ion-title,
+ion-content {
+    --background: #1e1e1e;
+    --color: #ffffff;
+}
+
+ion-list-header {
+    background-color: #2e2e2e;
+    width: 100%;
+}
+
+ion-item {
+    --background: transparent;
+    --color: #ffffff;
+    width: 100%;
+}
+
+ion-item[button] {
+    --background: transparent;
+    --color: #ffffff;
+    width: 100%;
+}
+
+ion-item[button]:hover {
+    --background: #3e3e3e;
+}
+
+ion-icon {
+    font-size: 1.2em;
+    color: #ffffff;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+}
+
+ion-button {
+    margin-top: 15px;
+    --border-radius: 5px;
+}

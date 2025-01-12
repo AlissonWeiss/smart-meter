@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Adicionar Smart Meter</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input label="ID do Smart Meter" labelPlacement="floating" placeholder="SmartMeter_0A:1B:2C:3D:4E:5F"
+        [(ngModel)]="smartMeterId" [ngModelOptions]="{standalone: true}" [disabled]="isEditMode">
+      </ion-input>
+      <ion-button slot="end" (click)="openQrReader()" fill="clear">
+        <ion-icon name="qr-code"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Nome do Smart Meter" labelPlacement="floating" placeholder="Meu Medidor Inteligente"
+        [(ngModel)]="smartMeterName" [ngModelOptions]="{standalone: true}" [disabled]="!isEditMode"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-row>
+    <ion-col>
+      <ion-button expand="block" (click)="verifySmartMeter()" [disabled]="isEditMode">Verificar</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" (click)="saveSmartMeter()" [disabled]="!enableSaveButton">Salvar</ion-button>
+    </ion-col>
+  </ion-row>
+</ion-content>

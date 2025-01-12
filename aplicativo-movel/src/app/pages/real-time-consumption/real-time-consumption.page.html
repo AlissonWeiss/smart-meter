@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Smart Meter</ion-label>
+    <ion-select placeholder="Selecione o Smart Meter desejado" (ionChange)="handleChange($event)">
+      <ion-select-option *ngFor="let smartMeter of smartMeters" [value]="smartMeter.id">{{ smartMeter.name
+        }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Atualizar automaticamente</ion-label>
+    <ion-select placeholder="Atualizar a cada " (ionChange)="handleChangeAutoRefresh($event)">
+      <ion-select-option [value]="-1" selected>Não atualizar automaticamente</ion-select-option>
+      <ion-select-option [value]="2000">2 segundos</ion-select-option>
+      <ion-select-option [value]="5000">5 segundos</ion-select-option>
+      <ion-select-option [value]="10000">10 segundos</ion-select-option>
+      <ion-select-option [value]="30000">30 segundos</ion-select-option>
+      <ion-select-option [value]="60000">60 segundos</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ng-container *ngIf="selectedSmartMeter; else noSmartMeterSelected">
+    <ion-card *ngFor="let card of cards">
+      <ion-card-header>
+        <ion-item lines="none">
+          <ion-card-title>{{ card.title }}</ion-card-title>
+          <ion-button slot="end" fill="clear" (click)="toggleCard(card)" class="eye-button">
+            <ion-icon class="eye-icon" [name]="cardState[card.key] ? 'eye-off' : 'eye'"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content *ngIf="cardState[card.key]">
+        <div class="consumption-value">
+          <h1>{{ card.value }}</h1>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <ng-template #noSmartMeterSelected>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Informação</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="consumption-value">
+          <h1>Necessário selecionar um smart meter para visualizar o consumo em tempo real</h1>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

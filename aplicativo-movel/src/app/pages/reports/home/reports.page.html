@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <div *ngFor="let report of reports">
+      <ion-item (click)="toggleReport(report)">
+        <ion-label>
+          <h2>{{ report.name }}</h2>
+        </ion-label>
+        <ion-icon aria-hidden="true" slot="end"
+          [name]="report.showDescription ? 'chevron-up' : 'chevron-down'"></ion-icon>
+      </ion-item>
+      <div *ngIf="report.showDescription" class="dropdown-content">
+        <p>{{ report.description }}</p>
+        <ion-button expand="block" (click)="openReport(report)">Abrir Relatório</ion-button>
+      </div>
+    </div>
+  </ion-list>
+</ion-content>

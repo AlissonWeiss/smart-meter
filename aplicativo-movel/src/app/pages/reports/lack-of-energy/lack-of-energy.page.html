@@ -1,0 +1,81 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+    <ion-buttons slot="end" expand="block">
+      <ion-button (click)="toggleEyeButton()">
+        <ion-icon [name]="showEyeButton ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="showEyeButton">
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-input label="De:" labelPlacement="floating" type="date" [(ngModel)]="initialDate"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Até:" labelPlacement="floating" type="date" [(ngModel)]="endDate"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label>Duração Mínima:</ion-label>
+          <ion-select [(ngModel)]="minimumPeriod">
+            <ion-select-option value="300">5 minutos</ion-select-option>
+            <ion-select-option value="600">10 minutos</ion-select-option>
+            <ion-select-option value="900">15 minutos</ion-select-option>
+            <ion-select-option value="1800">30 minutos</ion-select-option>
+            <ion-select-option value="3600">1 hora</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Dispositivos</ion-label>
+          <ion-select [multiple]="true" [(ngModel)]="selectedSmartMeters">
+            <ion-select-option *ngFor="let smartMeter of mySmartMeters" [value]="smartMeter.id">{{ smartMeter.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" [disabled]="isLoading" (click)="searchForLackOfEnergy()">
+          <ng-container *ngIf="!isLoading; else loading">
+            Buscar
+          </ng-container>
+          <ng-template #loading>
+            <ion-spinner name="crescent"></ion-spinner>
+          </ng-template>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ng-container *ngIf="lackOfEnergies && lackOfEnergies.length > 0; else noData">
+      <ion-item *ngFor="let lackOfEnergy of lackOfEnergies; let i = index">
+        <ion-label>
+          <h1>{{ lackOfEnergy.from_datetime | date:'dd/MM/yyyy' }}</h1>
+          <h3>{{ lackOfEnergy.smart_meter_id }}</h3>
+          <p>Inicio: {{ lackOfEnergy.from_datetime | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+          <p>Fim: {{ lackOfEnergy.to_datetime | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+          <p>Duração: {{ lackOfEnergy.gap_in_seconds / 60 | number:'1.0-0' }} minutos</p>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+    <ng-template #noData>
+      <ion-item>
+        <ion-label>
+          <h1>Falta de energia não encontrada</h1>
+          <p>Não foram encontradas faltas de energia para os filtros especificados.</p>
+        </ion-label>
+      </ion-item>
+    </ng-template>
+  </ion-list>
+</ion-content>

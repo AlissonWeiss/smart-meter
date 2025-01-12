@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="wifi-page">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Configurar Ponto de Acesso</ion-card-title>
+        <ion-card-subtitle>Gerencie o ponto de acesso do seu Smart Meter</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div *ngIf="isNotConnected">
+          <ion-list>
+            <ion-text color="danger">
+              Rede Wi-Fi não conectada.
+            </ion-text>
+            <ion-text color="danger">
+              Conecte-se à rede Wi-Fi <strong><em>"ESP_SmartMeter"</em></strong> e tente novamente.
+            </ion-text>
+          </ion-list>
+        </div>
+
+        <form #wifiForm="ngForm" *ngIf="!isNotConnected">
+          <ion-list>
+            <ion-item>
+              <ion-label position="stacked">SSID</ion-label>
+              <ion-input placeholder="Nome da rede" [(ngModel)]="wifiData.ssid" name="ssid" required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Senha</ion-label>
+              <ion-input placeholder="Senha da rede" [(ngModel)]="wifiData.password" type="password" name="password"
+                minlength="8" required>
+                <ion-input-password-toggle></ion-input-password-toggle>
+              </ion-input>
+            </ion-item>
+
+            <ion-text color="danger"
+              *ngIf="wifiForm.controls['password']?.invalid && wifiForm.controls['password']?.touched">
+              A senha deve ter pelo menos 8 caracteres.
+            </ion-text>
+          </ion-list>
+
+          <div class="button-container">
+            <ion-button expand="block" color="primary" (click)="sendWiFiData()"
+              [disabled]="wifiForm.invalid || isNotConnected">
+              Enviar Credenciais
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

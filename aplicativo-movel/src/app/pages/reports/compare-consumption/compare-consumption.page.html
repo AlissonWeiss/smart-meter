@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label>Smart Meters</ion-label>
+          <ion-select [(ngModel)]="selectedSmartMeters" multiple="true">
+            <ion-select-option *ngFor="let meter of mySmartMeters" [value]="meter.id">
+              {{ meter.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-item>
+          <ion-label>Comparar por: </ion-label>
+          <ion-select [(ngModel)]="reportType">
+            <ion-select-option value="compare_by_hour_last_7_days">Por hora (Últimos 7 dias)</ion-select-option>
+            <ion-select-option value="compare_by_day_last_30_days">Por dia (Últimos 30 dias)</ion-select-option>
+            <ion-select-option value="compare_by_month_last_3_years">Por mês (Últimos 3 anos)</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-button expand="full" (click)="fetchComparisonData()">
+          <ion-spinner *ngIf="isLoading"></ion-spinner>
+          <span *ngIf="!isLoading">Processar</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <canvas #comparisonChart></canvas>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

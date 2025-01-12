@@ -1,0 +1,143 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:4.4
+    hostname: mongodb
+    container_name: mongodb
+    restart: always # Indica ao Docker que, em caso de qualquer erro, o mongodb deve ser reiniciado.
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    expose:
+      - "${MONGODB_PORT}"
+    ports:
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
+    networks:
+      - default
+    volumes:
+      - ./:/data
+
+  orion:
+      image: fiware/orion:latest
+      hostname: ${ORION_HOST_NAME}
+      container_name: orion
+      restart: always # Indica ao Docker que, em caso de qualquer erro, o orion deve ser reiniciado.
+      depends_on:
+        - mongodb
+      links:
+          - mongodb
+      expose:
+          - "${ORION_PORT}"
+      ports:
+          - "${ORION_PORT}:${ORION_PORT}"
+      command: -dbhost mongodb -db ${MONGODB_DATABASE_NAME} -dbuser ${MONGODB_USERNAME} -dbpwd ${MONGODB_PASSWORD}
+      healthcheck: # check if orion is healthy
+        test: curl --fail -s http://${ORION_HOST_NAME}:${ORION_PORT}/version || exit 1
+        interval: 10s
+
+  nginx:
+    hostname: nginx
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "11026:11026"
+      - "18668:18668"
+      - "18666:18666"
+      - "14200:14200"
+    depends_on:
+      - orion
+
+  iotagent-json:
+      image: fiware/iotagent-json:latest
+      hostname: iotagent-json
+      container_name: iotagent-json
+      restart: always # Indica ao Docker que, em caso de qualquer erro, o iotagent-json deve ser reiniciado.
+      depends_on:
+        - mongodb
+      networks:
+        - default
+      expose:
+          - "${IOTA_HTTP_PORT}"
+          - "${IOTA_PROVIDER_PORT}"
+      ports:
+          - "${IOTA_HTTP_PORT}:${IOTA_HTTP_PORT}"
+          - "${IOTA_PROVIDER_PORT}:${IOTA_PROVIDER_PORT}"
+      environment:
+        - "IOTA_CB_HOST=${ORION_HOST_NAME}" # Nome do context broker para atualizar o contexto
+        - "IOTA_CB_PORT=${ORION_PORT}" # Porta onde o Context Broker ouve as atualizações de contexto
+        - "IOTA_NORTH_PORT=${IOTA_NORTH_PORT}"
+        - IOTA_REGISTRY_TYPE=mongodb # Indica que deve armazenar as informações em banco de dados (MongoDB)
+        - IOTA_LOG_LEVEL=DEBUG
+        - IOTA_DEFAULT_EXPRESSION_LANGUAGE=jexl
+        - IOTA_TIMESTAMP=true
+        - IOTA_CB_NGSI_VERSION=v2 # Usa NGSIv2 quando envia atualizações
+        - IOTA_AUTOCAST=true
+        - "IOTA_MONGO_HOST=${IOTA_MONGO_HOST}" # Host do MongoDB
+        - "IOTA_MONGO_PORT=${MONGODB_PORT}" # Porta do MongoDB
+        - "IOTA_MONGO_USER=${MONGODB_USERNAME}" # Usuário do MongoDB
+        - "IOTA_MONGO_PASSWORD=${MONGODB_PASSWORD}" # Senha do MongoDB
+        - "IOTA_MONGO_DB=${IOTA_MONGO_DB_NAME}" # Nome do database no MongoDB
+        - "IOTA_HTTP_PORT=${IOTA_HTTP_PORT}" # Porta para trafegar informações sobre o protocolo HTTP
+        - "IOTA_PROVIDER_URL=${IOTA_PROVIDER_URL}:${IOTA_PROVIDER_PORT}"
+        - IOTA_DEFAULT_RESOURCE=/iot/json
+
+  sth-comet:
+    image: fiware/sth-comet:latest
+    hostname: sth-comet
+    container_name: sth-comet
+    restart: always # Indica ao Docker que, em caso de qualquer erro, o sth-comet deve ser reiniciado.
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    expose:
+      - "${STH_PORT}"
+    ports:
+      - "${STH_PORT}:${STH_PORT}"
+    environment:
+      - "STH_HOST=${STH_HOST}"
+      - "DB_URI=mongodb:${MONGODB_PORT}"
+      - "DB_USERNAME=${MONGODB_USERNAME}"
+      - "DB_PASSWORD=${MONGODB_PASSWORD}"
+      - "STH_DB_PREFIX=${STH_DB_PREFIX}"
+      - "STH_COLLECTION_PREFIX=${STH_COLLECTION_PREFIX}"
+      - "LOGOPS_LEVEL=${STH_LOG_LEVEL}"
+      - "LOGOPS_FORMAT=${STH_LOG_FORMAT}"
+
+  cratedb:
+    image: crate:latest
+    hostname: "${CRATEDB_HOST}"
+    container_name: cratedb
+    ports:
+      - "${CRATEDB_WEB_INTERFACE_PORT}:${CRATEDB_WEB_INTERFACE_PORT}"
+      - "${CRATEDB_CLIENT_CONNECTION_PORT}:${CRATEDB_CLIENT_CONNECTION_PORT}"
+    volumes:
+      - ./crate-data:/var/lib/postgresql/data
+    environment:
+      - LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+      - CRATE_AUTH_TRUST_HTTP_DEFAULT_HEADER=X-Forwarded-User
+      - CRATE_AUTH=trust
+      - CRATE_USER=crate
+      - CRATE_PASSWORD=crate
+
+  quantumleap:
+    image: orchestracities/quantumleap:latest
+    hostname: quantumleap
+    container_name: quantumleap
+    ports:
+      - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
+    depends_on:
+      - orion
+      - cratedb
+    environment:
+      - "CRATE_HOST=${CRATEDB_HOST}"
+      - USE_GEOCODING=True
+      - LOGLEVEL=DEBUG
+volumes:
+  mongodb: ~
+  cratedb_data:
+
+networks:
+  default: 

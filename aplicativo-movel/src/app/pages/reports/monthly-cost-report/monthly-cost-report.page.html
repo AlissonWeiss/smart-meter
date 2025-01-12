@@ -1,0 +1,94 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+    <ion-buttons slot="end" expand="block">
+      <ion-button (click)="toggleEyeButton()">
+        <ion-icon [name]="showEyeButton ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="showEyeButton">
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>Smart Meter</ion-label>
+          <ion-select [multiple]="true" [(ngModel)]="selectedSmartMeters">
+            <ion-select-option *ngFor="let meter of mySmartMeters" [value]="meter.id">
+              {{ meter.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-datetime-button datetime="monthYearPicker"></ion-datetime-button>
+
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="monthYearPicker" presentation="month-year" [(ngModel)]="selectedMonthYear"
+                (ionChange)="onMonthYearChange($event)" value="2024-11" locale="pt-BR"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" [disabled]="isLoading" (click)="search()">
+          <ng-container *ngIf="!isLoading; else loading">
+            Buscar
+          </ng-container>
+          <ng-template #loading>
+            <ion-spinner name="crescent"></ion-spinner>
+          </ng-template>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="3"><strong>Data</strong></ion-col>
+      <ion-col size="3"><strong>Consumo (KW)</strong></ion-col>
+      <ion-col size="3"><strong>Preço/KW</strong></ion-col>
+      <ion-col size="3"><strong>Valor Financeiro</strong></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of filteredData">
+      <ion-col size="3">{{ item.consumption_date | date: 'dd/MM/yyyy' }}</ion-col>
+      <ion-col size="3">{{ item.consumption | number: '1.5-5' }}</ion-col>
+      <ion-col size="3">{{ item.price | currency: 'R$ ' }}</ion-col>
+      <ion-col size="3">{{ item.total_value | currency: 'R$ ' }}</ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3"><strong> - </strong></ion-col>
+      <ion-col size="3"><strong> - </strong></ion-col>
+      <ion-col size="3"><strong> - </strong></ion-col>
+      <ion-col size="3"><strong> - </strong></ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3"><strong>Totais e Médias</strong></ion-col>
+      <ion-col size="3">
+        <div><strong>Total:</strong> {{ getTotalConsumption() | number: '1.3-3' }}</div>
+        <div><strong>Média:</strong> {{ getConsumptionAverage() | number: '1.3-3' }}</div>
+      </ion-col>
+      <ion-col size="3">
+        <div><strong>Total:</strong> - </div>
+        <div><strong>Média:</strong> {{ getAveragePrice() | currency: 'R$ ' }} </div>
+      </ion-col>
+      <ion-col size="3">
+        <div><strong>Total:</strong> {{ getTotalValue() | currency: 'R$ ' }}</div>
+        <div><strong>Média:</strong> {{ getAverageTotalValue() | currency: 'R$ ' }}</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

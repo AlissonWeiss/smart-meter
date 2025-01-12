@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="header-row">
+      <ion-col><strong>Preço (R$)</strong></ion-col>
+      <ion-col><strong>Data Início</strong></ion-col>
+      <ion-col><strong>Cadastrado em</strong></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let price of prices">
+      <ion-col>{{ price.kwPrice | currency:'BRL': 'symbol-narrow' }}</ion-col>
+      <ion-col>{{ price.startDate | date: 'dd/MM/yyyy' }}</ion-col>
+      <ion-col>{{ price.insertedAt | date: 'dd/MM/yyyy HH:mm:ss'}}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNewUpdatedPrice()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

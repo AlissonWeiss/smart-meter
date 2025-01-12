@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Adicionar Preço do Quilowatt</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input label="Preço unitário do quilowatt" labelPlacement="floating" type="number" placeholder="0.00"
+        [(ngModel)]="kilowattUpdatedPrice"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Data da efetivação do preço" labelPlacement="floating" type="date"
+        [(ngModel)]="kilowattEfectiveDate"></ion-input>
+    </ion-item>
+
+  </ion-list>
+  <ion-button expand="full" (click)="addPrice()">Adicionar</ion-button>
+</ion-content>

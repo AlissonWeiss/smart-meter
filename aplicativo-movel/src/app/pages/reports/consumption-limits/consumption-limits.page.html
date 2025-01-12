@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="showEyeButton">
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>Tipo de relatório:</ion-label>
+          <ion-select [(ngModel)]="reportType">
+            <ion-select-option value="by_week">Última semana (Dados agrupados por dia)</ion-select-option>
+            <ion-select-option value="by_month">Último mês (Dados agrupados por semana)</ion-select-option>
+            <ion-select-option value="by_year">Último ano (Dados agrupados por mês)</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Dispositivos</ion-label>
+          <ion-select [multiple]="true" [(ngModel)]="selectedSmartMeters">
+            <ion-select-option *ngFor="let smartMeter of mySmartMeters" [value]="smartMeter.id">{{ smartMeter.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" [disabled]="isLoading" (click)="search()">
+          <ng-container *ngIf="!isLoading; else loading">
+            Buscar
+          </ng-container>
+          <ng-template #loading>
+            <ion-spinner name="crescent"></ion-spinner>
+          </ng-template>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Gráfico de Consumo</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #barChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

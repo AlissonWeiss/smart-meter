@@ -1,0 +1,133 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-list-header>
+      <ion-item button detail="false" lines="none" (click)="toggleSection('preferences')">
+        <ion-label>Minhas Preferências</ion-label>
+        <ion-icon [name]="preferencesOpen ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list-header>
+    <div *ngIf="preferencesOpen">
+      <ion-item>
+        <ion-label>Aceito receber notificações</ion-label>
+        <ion-toggle slot="end" [(ngModel)]="isNotificationsAllowed" [ngModelOptions]="{standalone: true}"></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Execução em segundo plano</ion-label>
+        <ion-select slot="end" placeholder="Selecione" (ionChange)="handleChangeBackgroundUpdate($event)"
+          [(ngModel)]="timeForBackgroundUpdate">
+          <ion-select-option value="-1" selected>Nunca</ion-select-option>
+          <ion-select-option value="1">1 minuto</ion-select-option>
+          <ion-select-option value="5">5 minutos</ion-select-option>
+          <ion-select-option value="10">10 minutos</ion-select-option>
+          <ion-select-option value="30">30 minutos</ion-select-option>
+          <ion-select-option value="60">1 hora</ion-select-option>
+          <ion-select-option value="120">2 horas</ion-select-option>
+          <ion-select-option value="300">5 horas</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="firstMonthDayOpen">
+        <ion-label>Dia inicial do periodo mensal</ion-label>
+        <ion-select slot="end" placeholder="Selecione" [(ngModel)]="firstMonthDay"
+          (ionChange)="handleFirstDayOfMonthUpdate($event)">
+          <ion-select-option value="" disabled>--</ion-select-option>
+          <ion-select-option value="01">01</ion-select-option>
+          <ion-select-option value="02">02</ion-select-option>
+          <ion-select-option value="03">03</ion-select-option>
+          <ion-select-option value="04">04</ion-select-option>
+          <ion-select-option value="05">05</ion-select-option>
+          <ion-select-option value="06">06</ion-select-option>
+          <ion-select-option value="07">07</ion-select-option>
+          <ion-select-option value="08">08</ion-select-option>
+          <ion-select-option value="09">09</ion-select-option>
+          <ion-select-option value="10">10</ion-select-option>
+          <ion-select-option value="11">11</ion-select-option>
+          <ion-select-option value="12">12</ion-select-option>
+          <ion-select-option value="13">13</ion-select-option>
+          <ion-select-option value="14">14</ion-select-option>
+          <ion-select-option value="15">15</ion-select-option>
+          <ion-select-option value="16">16</ion-select-option>
+          <ion-select-option value="17">17</ion-select-option>
+          <ion-select-option value="18">18</ion-select-option>
+          <ion-select-option value="19">19</ion-select-option>
+          <ion-select-option value="20">20</ion-select-option>
+          <ion-select-option value="21">21</ion-select-option>
+          <ion-select-option value="22">22</ion-select-option>
+          <ion-select-option value="23">23</ion-select-option>
+          <ion-select-option value="24">24</ion-select-option>
+          <ion-select-option value="25">25</ion-select-option>
+          <ion-select-option value="26">26</ion-select-option>
+          <ion-select-option value="27">27</ion-select-option>
+          <ion-select-option value="28">28</ion-select-option>
+          <ion-select-option value="29">29</ion-select-option>
+          <ion-select-option value="30">30</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <form cla ss="form">
+        <ion-item>
+          <ion-input label="Limite de energia diário (Kw)" label-placement="floating" type="number"
+            placeholder="Insira o seu limite diário" [(ngModel)]="dailyEnergyLimit" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Limite de energia semanal (Kw)" label-placement="floating" type="number"
+            placeholder="Insira o seu limite semanal" [(ngModel)]="weeklyEnergyLimit" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Limite de energia mensal (Kw)" label-placement="floating" type="number"
+            placeholder="Insira o seu limite mensal" [(ngModel)]="monthlyEnergyLimit" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+      </form>
+    </div>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-item button detail="false" lines="none" (click)="toggleSection('fiware')">
+        <ion-label>Configurações do FIWARE</ion-label>
+        <ion-icon [name]="fiwareOpen ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list-header>
+    <div *ngIf="fiwareOpen">
+      <form class="form">
+        <ion-item>
+          <ion-input label="URL do servidor FIWARE" label-placement="floating" type="url"
+            placeholder="Insira o host do FIWARE" [(ngModel)]="fiwareHost" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Porta do FIWARE Orion" label-placement="floating" type="number"
+            placeholder="Insira a porta do FIWARE Orion" [(ngModel)]="fiwareOrionPort" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Porta do FIWARE QuantumLeap" label-placement="floating" type="number"
+            placeholder="Insira a porta do FIWARE QuantumLeap" [(ngModel)]="fiwareQuantumLeapPort" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Porta do CrateDB" label-placement="floating" type="number"
+            placeholder="Insira a porta do CrateDB" [(ngModel)]="crateDBPort" [clearInput]="true"
+            [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+      </form>
+    </div>
+  </ion-list>
+
+  <div class="button-group">
+    <ion-button expand="block" color="success" (click)="saveSettings()">Salvar</ion-button>
+    <ion-button expand="block" color="danger" (click)="loadLocalStorageOrDefault()">Descartar</ion-button>
+  </div>
+
+</ion-content>

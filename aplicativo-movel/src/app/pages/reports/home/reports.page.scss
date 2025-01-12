@@ -1,0 +1,51 @@
+ion-list {
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-item {
+    --border-color: transparent;
+    border-bottom: 1px solid #ffffff;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+ion-label {
+    display: block;
+    width: 100%;
+}
+
+ion-label h2 {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #747474;
+}
+
+.dropdown-content {
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dropdown-content p {
+    margin: 0;
+    padding: 5px 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+ion-button {
+    --background: #007bff;
+    --background-focused: #0056b3;
+    --background-hover: #0056b3;
+    --background-activated: #0056b3;
+    --border-radius: 5px;
+    margin-top: 10px;
+}
+
+ion-button:hover {
+    --background: #0056b3;
+}
